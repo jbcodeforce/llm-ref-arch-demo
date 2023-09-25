@@ -11,5 +11,5 @@ USER $USER
 # install NLP packages: 
 RUN pip install -U  nltk  gensim  
 # install llm package
-RUN pip install langchain openai boto3 gradio
+RUN pip install langchain openai boto3 gradio chromadb unstructured markdown tiktoken
 WORKDIR /app
