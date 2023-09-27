@@ -23,17 +23,3 @@ if __name__ == "__main__":
     orchestrator=Orchestrator()
     response= orchestrator.processHumanQuery(query)
     print_ww(response)
-
-    
-    #memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, return_source_documents=True)
-    #qa = ConversationalRetrievalChain.from_llm(llm, chromaClient.as_retriever(), memory=memory)
-  
-    #docs = chromaClient.similarity_search(query)
-    #print(docs[0].page_content)
-    #result = qa({"question": query})
-    #print_ww(result["answer"])
-    #print_ww(result["source_documents"][0])
-    
-    # print_ww(result["source_documents"])
-    # print_ww(result["source_documents"])
-    

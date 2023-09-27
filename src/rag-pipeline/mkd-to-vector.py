@@ -38,7 +38,8 @@ def loadMarkdownDocsToChunks(markdown_path):
 '''
 Load all md file from the given path, use text splitter
 using headers to split the text.
-The problem is that it return a big document, which is not nice.
+The problem is that it returns a big document with all the text does not seem efficient.
+To do: need to tune the splitting process by keeping the context of a paragraph.
 '''
 def loadMarkdownDocsToChunksWithHeader(markdown_path):
     headers_to_split_on = [("#", "Header 1"), ("##", "Header 2"), ("###", "Header 3")]

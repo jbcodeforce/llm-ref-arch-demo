@@ -129,6 +129,8 @@ The human can ask the following type of queries:
 
 This is the core of the application. It is integrated with Anthropic Claude 2 LLM deployed on AWS Bedrock amd uses Streamlit framework. The query has to be around Trusted Advisor body of knowledge. So before going to the llm we need to enrich the prompt with content from similarity search. 
 
+The approach is to use a QA retriever. 
+
 ### User interface
 
 The user interface is more a question and answer bot. To run it:
@@ -140,7 +142,7 @@ python -m streamlit run ui-streamlit.py
 
 ![](./docs/chatbot-ui.png)
 
-The current implementation is reusing the Orchestrator class and pass the query enterred by the user.
+The current implementation is reusing the Orchestrator class and passes the query enterred by the user. In production the Orchestrator will be an independant service, scaling horizontally, as well as the User Interface.
 
 THe query that may work:
 
