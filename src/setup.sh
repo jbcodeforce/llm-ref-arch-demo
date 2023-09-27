@@ -1,6 +1,11 @@
 if [ -d dependencies ]
 then
     echo "dependencies directory already exists"
+    cd dependencies
+    pip install --no-build-isolation --force-reinstall  \
+   ./awscli-*-py3-none-any.whl \
+   ./boto3-*-py3-none-any.whl  \
+   ./botocore-*-py3-none-any.whl
 else
     mkdir dependencies
     cd dependencies

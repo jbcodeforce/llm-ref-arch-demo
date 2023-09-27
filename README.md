@@ -29,6 +29,14 @@ The `./startPythonDocker.sh` will mount the repository to the `/app` folder with
 docker exec -ti pythonenv bash
 ```
 
+If you encounter the following error while executing a python code accessing AWS bedrock via boto3, be sure to run the setup.sh script.
+
+```sh
+cd src
+./setup.sh
+# ...
+Successfully installed PyYAML-6.0.1 awscli-1.29.21 boto3-1.28.21 botocore-1.31.21 colorama-0.4.4 docutils-0.16 jmespath-1.0.1 pyasn1-0.5.0 python-dateutil-2.8.2 rsa-4.7.2 s3transfer-0.6.2 six-1.16.0 urllib3-1.26.16
+```
 
 ## RAG implementation
 
@@ -37,7 +45,9 @@ The RAG embedding process is illustrated in the [src/rag_pipeline/mkd-to-vector.
 
 ## Orchestrator examples
 
- [qa-on-base-knowledge.py](./src/orchestrator/qa-on-base-knowledge.py) 
+It may be better to separate the orchestrator component from the user interface so we can test the model, the prompt, the chain or process logic of the LLM application.
+
+The [qa-on-base-knowledge.py](./src/orchestrator/qa-on-base-knowledge.py) is the implementation of such orchestrator. It exposes method to be used by the user interface, like the chat bot in the user interface folder.
 
 ### Non regression testing
 
@@ -109,11 +119,37 @@ The human can ask the following type of queries:
 * Write a rule in python that if the account is dev, in the trusted advisor 
 * Write a temporal rule for Apache Flink, applied with a 2 hour time window, to aggregate events on for a large number of EC2 security group recommendations, for the account 012345678 and report the aggregate. 
 
-### Prompt
-
 ### RAG implementation
 
 1. From a unique account Trusted Advisor report in excel format, running the tool, to build a md file about the recommendations. This is just a simple file processing, and should be done one time: `python extract-ta-recommendation.py`. The output is a file in the docs folder.
 1. Be sure to have AWAWS_SESSION_TOKEN environment variable defined to be able to use `boto3` SDK and access Bedrock APIs 
-1. Run embedding on the TA recommendations: `python mkd-to-vector.py`. The outcome is a embeddings folder with the vectors created with Chromadb, and Bedrock embedding. The alternate to Bedrock embeddings is to use [https://www.sbert.net/](https://www.sbert.net/).
+1. Run embedding on the TA recommendations: `python mkd-to-vector.py`. The outcome is a embeddings folder with the vectors created with Chromadb, and Bedrock embedding. The alternate to Bedrock embeddings is to use [https://www.sbert.net/](https://www.sbert.net/), which is what is used in the current code. The vector store is saved on local disk so we can reuse it to do semantic similarity search.
 
+### Orchestrator
+
+This is the core of the application. It is integrated with Anthropic Claude 2 LLM deployed on AWS Bedrock amd uses Streamlit framework. The query has to be around Trusted Advisor body of knowledge. So before going to the llm we need to enrich the prompt with content from similarity search. 
+
+### User interface
+
+The user interface is more a question and answer bot. To run it:
+
+```sh
+# under user-interface
+python -m streamlit run ui-streamlit.py 
+```
+
+![](./docs/chatbot-ui.png)
+
+The current implementation is reusing the Orchestrator class and pass the query enterred by the user.
+
+THe query that may work:
+
+* load balancers configured with a missing security group?
+
+### Next
+
+* Add template for code to be generated to filter event
+* Tune the prompt to generate code
+* Connect a Trusted Advisor to EventBridge
+* Connect eventbridge to a streaming platform
+* Deploy AWS Apache Flink with the code generated
