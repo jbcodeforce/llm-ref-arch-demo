@@ -37,7 +37,6 @@ def loadMarkdownDocs(markdown_path):
 
 def createEmbeddings():
     aws_bedrock_client = bedrock.get_bedrock_client()
-    #llm = Bedrock(model_id="anthropic.claude-v1", client=aws_bedrock_client, model_kwargs={'max_tokens_to_sample':200})
     return BedrockEmbeddings(client=aws_bedrock_client)
 
 

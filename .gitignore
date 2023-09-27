@@ -1,3 +1,4 @@
 src/dependencies/**
-src/rag-pipeline/docs/**
+src/rag-pipeline/docs/**.xlsx
 src/embeddings/*
+data/**

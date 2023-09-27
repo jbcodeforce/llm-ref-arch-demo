@@ -33,7 +33,7 @@ if __name__ == "__main__":
                     client=aws_bedrock_client,
                     model_id="anthropic.claude-v1"
                 ) 
-    promptTemplare='''You are an expert in AWS service, so try to answer the following question:\n
+    promptTemplare='''You are an expert in AWS Trusted Advisor service, so try to answer the following question:\n
     {question}\n'''
     llm_chain = LLMChain(llm=llm,
             prompt=PromptTemplate.from_template(promptTemplare)
