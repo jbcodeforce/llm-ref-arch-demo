@@ -3,3 +3,4 @@ src/rag-pipeline/docs/**.xlsx
 src/embeddings/*
 data/**
 **/.venv/*
+sa-tools/secret.sh
