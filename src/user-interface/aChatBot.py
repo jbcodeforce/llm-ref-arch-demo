@@ -1,7 +1,7 @@
 import os,sys
 
 import gradio as gr
-from utils import bedrock,  print_ww
+
 from langchain.llms import Bedrock
 from langchain.chains import ConversationChain
 module_path = ".."

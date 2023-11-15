@@ -1,42 +1,47 @@
-# A Reference Architecture for LLM solution in EDA world
+# A LLM personal playground
 
-A generic reference architecture for a LLM solution looks like in the following diagram:
+This repository is a set of studies around LLM by applying the LLM reference architecture as defined by [A16Z](https://a16z.com/emerging-architectures-for-llm-applications/). The content is also linked to this [generic study notes](https://jbcodeforce.github.io/ML-studies/ml/generative-ai/) and [AWS Bedrock summary](https://jbcodeforce.github.io/aws-studies/ai-ml/bedrock/).
+ 
+## Architecture
 
-![](./docs/diagrams/llm-ra-1.drawio.png)
+Review the reference architecture of an LLM based solution [in this article](https://jbcodeforce.github.io/ML-studies/ml/generative-ai/#reference-architecture-for-llm-solution).
 
-1. **Data pipelines** are batch processing, which in the context of LLM may mix processing of unstructured documents with structured CSVs, Json, or SQL tables. data done in map-reduce platform to do Extract Transform Load job. Most of existing pipelines land their output to Data Lake. But modern pipeline may call directly a LLM to build embeddings to be saved into Vector Store. The flow will look like in the figure below, which is based on classical Retrieval augmented generation (RAG) process.
+This repository demonstrates how to use this reference architecture for different solutions.
 
-    ![](./docs/diagrams/rag-process.drawio.png)
+## Python env in docker for development
 
-    RAG retrieves data from outside the language model (non-parametric) and augments the prompts by adding the relevant retrieved data in context.
-1. **Streaming** is where connection to event-driven architecture land: a lot of business services / microservices are generating important events to be part of the future context of the end user interaction with the application. Those events can be aggregated, and a similar pipeline can be done with streaming application, consuming events, and doing the embedding via LLM calls then push to Vector Store.
-1. **Embeddings** is the technique to create a numerical vector representation of each document chunks. There is open-source solution, like the [Sentence Transformers library from Hugging Face](https://huggingface.co/sentence-transformers), or can use proprietary, hosted LLM API.
-1. **Vector Store**, persits vectors, a numerical representation of NL sentence, with indexing capability and similarity search function. Multiple solutions exist as Vector Store: [Faiss](https://faiss.ai/index.html), [ChromaDB](https://www.trychroma.com/), [AWS OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/what-is.html)
-1. **Hosted LLM** is a model serving service with LLM accessed via API. AWS Bedrock is used in all the code samples of this repository.
-1. **Orchestrator** is the solution code, which connect all those component together, may use session caching in distributed, cloud based service, use Vector Store to do silimarity semantic search, and expose API to be used by a ChatBot user interface.
-
-## Python env in docker
-
-To avoid getting with your own python environment, specially with Mac computer, this repository includes a Dockerfile to build an python development environment with all the library. A virtual env will have done the same.
+To avoid impacting with your own python environment, specially with Mac computer, this repository includes a Dockerfile to build a python development environment with all the needed libraries. A virtual env will have done the same but will have used more disk space.
 
 ```sh
 docker build -t jbcodeforce/python .
 ```
 
-The `./startPythonDocker.sh` will mount the repository to the `/app` folder within the container. A exec inside the container will us test the code.
+The `./startPythonDocker.sh` will mount the root folder of the repository to the `/app` folder within the container. A exec inside the container will help us test the code.
 
 ```sh
 docker exec -ti pythonenv bash
 ```
 
-If you encounter the following error while executing a python code accessing AWS bedrock via boto3, be sure to run the setup.sh script.
+## Consulting organization Knowledge Management solution
 
-```sh
-cd src
-./setup.sh
-# ...
-Successfully installed PyYAML-6.0.1 awscli-1.29.21 boto3-1.28.21 botocore-1.31.21 colorama-0.4.4 docutils-0.16 jmespath-1.0.1 pyasn1-0.5.0 python-dateutil-2.8.2 rsa-4.7.2 s3transfer-0.6.2 six-1.16.0 urllib3-1.26.16
-```
+The business context is illustrated in the following diagram. The fake company has professional staff delivering custom business solution around the company's core products. 
+
+![](./docs/diagrams/sa-tools/biz-context.drawio.png)
+
+There are a lot artifacts built in this context. They generate 1 TB of doc per year. The information of "where is what" is tribal knowledge, and consultants need to meet other at the coffee break to get some answers or to share stories.
+
+Executives from support team, wants to improve reusability of knowledge, scale their business so junior consultants can get more efficient than now. It takes 12 months to get a new hired consultant to be able to face a customer engagement alone. 24 months to be able to deliver consistent quality work. Consultants' problems the solution tries to address are highlighted in the following empathy map:
+
+![](./docs/diagrams/sa-tools/consultant-persona.drawio.png)
+
+
+The high level solution after the first meeting with the project stakeholders
+
+![](./docs/diagrams/sa-tools/llm-discovery.drawio.png)
+
+The details are in [this file](./sa-tools/Readme.md)
+
+
 
 ## RAG implementation
 
@@ -56,10 +61,10 @@ The [qa-on-base-knowledge.py](./src/orchestrator/qa-on-base-knowledge.py) is the
 
 ### Automated Pipeline? 
 
-## A remove noise solution example
+## A removing noise solution
 
-Some automated monitoring application can generate a lot of events, that could overflow a human, responsible for platform monitoring. This is not a new problem, and alarm filtering and correlation applications, based on inference engines, were used a lot at the end of 90s when network equipments where deployed worldwide. One of the challenge was to code the rules to remove false positive alarms, to limit the number of human work. Cloud providers are offering such capabilities of event generation based on a set of momnitoring, with filtering capability.
-But one of the key problems is that the rules to define filtering, correlation and action to take, are custom to any customer. May LLM help?
+Some automated monitoring application can generate a lot of events, that could overflow a human, responsible for platform monitoring. This is not a new problem, and alarm filtering and correlation applications, based on inference engines, were used a lot at the end of 90s when network equipments where deployed worldwide. One of the challenge was to code the rules to remove false positive alarms, to limit the number of human work. Cloud providers are offering such capabilities of event generation based on a set of monitoring products, with filtering capability.
+One of the key problems is that the rules to define filtering, correlation and action to take, are custom to any customer. May Generative AI help?
 
 As a concrete example, we can take AWS Trusted Advisor, which inspects an AWS environment and makes recommendations when opportunities exist to optimize cost, performance, availability, and security.
 
