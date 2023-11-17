@@ -4,7 +4,8 @@ answered from a LLM
 '''
 from langchain.embeddings import BedrockEmbeddings
 from langchain.llms.bedrock import Bedrock
-from langchain.chains import RetrievalQA,RetrievalQAWithSourcesChain,LLMChain
+from langchain.memory import ConversationBufferWindowMemory
+from langchain.chains import RetrievalQA,ConversationalRetrievalChain,LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.vectorstores import OpenSearchVectorSearch
 
@@ -33,15 +34,22 @@ class Orchestrator:
                 ssl_assert_hostname = False,
                 ssl_show_warn = False
         )
+        self.memory = ConversationBufferWindowMemory(memory_key="chat_history", return_messages=True) #Maintains a history of previous messages
         print(OPENSEARCH_HOST)
         
         
+    def get_llm(self,inference_modifier):
+        llm= Bedrock(
+              client=self.aws_bedrock_client,
+              model_id="anthropic.claude-v2",
+              model_kwargs = inference_modifier 
+        )
+        return llm
     
     def definePrompt(self):
         promptTemplate='''
 Human: Use the following pieces of context to answer the question at the end. 
 If you don't know the answer, just say that you don't know, don't try to make up an answer. 
-Use three sentences maximum and keep the answer as concise as possible. 
 Always say "thanks for asking!" at the end of the answer.
 \n
         {context}
@@ -59,11 +67,7 @@ Assistant:
                       "top_p": top_p,
                       "stop_sequences": ["\n\nHuman"]
                      }
-        llm= Bedrock(
-                        client=self.aws_bedrock_client,
-                        model_id="anthropic.claude-v2",
-                        model_kwargs = inference_modifier 
-                )
+        llm= self.get_llm(inference_modifier)
         print("--- Query: " + question)
         prompt=self.definePrompt() 
         print(prompt.format(context=context, question=question))
@@ -83,6 +87,21 @@ Assistant:
             return result
 
 
+    def get_memory(self): #create memory for the chat session
+        return self.memory
 
     def processChatMessage(self,humanMessage):
-        return "Got it"
+        inference_modifier = {'max_tokens_to_sample':4096, 
+                      "temperature": 0,
+                      "top_k":250,
+                      "top_p": 0.7,
+                      "stop_sequences": ["\n\nHuman"]
+                     }
+        llm= self.get_llm(inference_modifier)
+        conversation_with_retrieval = ConversationalRetrievalChain.from_llm(llm, 
+                        self.docsearch.as_retriever(search_type="similarity", search_kwargs={"k": 3}), 
+                        memory=self.memory)
+    
+        chat_response = conversation_with_retrieval({"question": humanMessage}) 
+        
+        return chat_response['answer']

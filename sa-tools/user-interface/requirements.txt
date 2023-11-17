@@ -6,3 +6,5 @@ altair
 pandas
 opensearch-py
 streamlit
+st-pages
+tiktoken

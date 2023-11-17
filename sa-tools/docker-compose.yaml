@@ -1,0 +1,18 @@
+version: '3'
+services:
+  demo:
+    image: j9r/j9r_llm_demo
+    container_name: llm_demo
+    ports:
+      - 8502:8501
+    environment:
+      OPENSEARCH_HOSTS: https://search-designdocs-irqdhpjtsyy3lqtq5e7ylp2nli.us-west-2.es.amazonaws.com
+      OPENSEARCH_INDEX: aws_bedrock_corpus
+      OPENSEARCH_PWD: Passw0rd!
+      BWB_REGION_NAME: us-west-2
+      BWB_ENDPOINT_URL: 
+    networks:
+      - opensearch-net
+
+networks:
+  opensearch-net:
