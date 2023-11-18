@@ -22,20 +22,22 @@ class Orchestrator:
         self.aws_bedrock_client = bedrock.get_bedrock_client()
         OPENSEARCH_HOST=os.environ.get("OPENSEARCH_HOST","https://localhost:9200")
         OPENSEARCH_PWD=os.environ.get("OPENSEARCH_PWD","admin")
+        OPENSEARCH_USER=os.environ.get("OPENSEARCH_USER","admin")
         OPENSEARCH_INDEX=os.environ.get("OPENSEARCH_INDEX","aws_bedrock_corpus")
         embeddings=BedrockEmbeddings(model_id="amazon.titan-embed-text-v1",client=self.aws_bedrock_client)
+        print(OPENSEARCH_HOST)
         self.docsearch=OpenSearchVectorSearch(
                 index_name=OPENSEARCH_INDEX,
                 embedding_function=embeddings,
                 opensearch_url=OPENSEARCH_HOST,
-                http_auth=("admin", OPENSEARCH_PWD),
-                use_ssl = False,
+                http_auth=(OPENSEARCH_USER, OPENSEARCH_PWD),
+                use_ssl = True,
                 verify_certs = False,
                 ssl_assert_hostname = False,
                 ssl_show_warn = False
         )
         self.memory = ConversationBufferWindowMemory(memory_key="chat_history", return_messages=True) #Maintains a history of previous messages
-        print(OPENSEARCH_HOST)
+       
         
         
     def get_llm(self,inference_modifier):

@@ -12,9 +12,7 @@ st.markdown("# Question to the knowledge base")
 st.sidebar.header("Question & Answer")
 st.write(
     """
-    This demo illustrates a combination of plotting and animation with
-Streamlit. We're generating a bunch of random numbers in a loop for around
-5 seconds. Enjoy!
+This demonstrates how to query a foundation model
 """
 )
 # streamlit toggle
@@ -26,6 +24,5 @@ with st.form('qa_form'):
     submitted = st.form_submit_button('Submit')
     if submitted:
         with st.spinner("Processing..."):
-            time.sleep(1)
-        response= orchestrator.processHumanQuery(question=text,context="",useVectorStore=callWithVectorStore)
-st.write(response)
+            response= orchestrator.processHumanQuery(question=text,context="",useVectorStore=callWithVectorStore)
+            st.write(response)

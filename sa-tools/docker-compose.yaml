@@ -6,11 +6,18 @@ services:
     ports:
       - 8502:8501
     environment:
-      OPENSEARCH_HOSTS: https://search-designdocs-irqdhpjtsyy3lqtq5e7ylp2nli.us-west-2.es.amazonaws.com
+      OPENSEARCH_HOST: https://search-designdocs-irqdhpjtsyy3lqtq5e7ylp2nli.us-west-2.es.amazonaws.com
       OPENSEARCH_INDEX: aws_bedrock_corpus
       OPENSEARCH_PWD: Passw0rd!
-      BWB_REGION_NAME: us-west-2
-      BWB_ENDPOINT_URL: 
+      OPENSEARCH_USER: admin
+      AWS_REGION: us-west-2
+      AWS_ACCESS_KEY_ID: <>
+      AWS_SECRET_ACCESS_KEY: <>
+      AWS_SESSION_TOKEN: <>
+
+      
+    volumes:
+      - $HOME/.aws:/root/.aws
     networks:
       - opensearch-net
 

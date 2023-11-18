@@ -1,6 +1,6 @@
 # Tech Sellers - Solution Architects tools
 
-An application to demonstrate how to use specific documentation to do RAG on top of Anthropic Claude 2, for tech sellers and field solution architects.
+An application to demonstrate how to use specific documentation to do RAG on top of a Fundational Model like Amazon Titan, Anthropic Claude 2, or Jurasic.  The tech sellers and field solution architects can use to query the corpus.
 
 ## Requirements
 
@@ -19,8 +19,6 @@ The high level solution after the first meeting with the project stakeholders
 
 ![](../docs/diagrams/sa-tools/llm-discovery.drawio.png)
 
-
-
 ### User Story_1: build corpus
 
 As a solution architect I want to upload a document or give a URL to crawl the content to build a new specific corpus so that I can query its content.
@@ -32,9 +30,11 @@ Which should be supported by:
 * Use OpenSearch or Kendra for vector stores
 * Use Bedrock embeddings
 
+This is supported by the [ragFunction]() component.
+
 ### User Story 2: Query custom corpus
 
-As a solution architect I want to query the models to get answer to my query.
+As a solution architect I want to query the models to get answer using the corpus from the RAG.
 
 ## Implementation consideration
 

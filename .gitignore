@@ -3,4 +3,5 @@ src/rag-pipeline/docs/**.xlsx
 src/embeddings/*
 data/**
 **/.venv/*
+**/__pycache__/*
 sa-tools/secret.sh

@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+
+  app:
+    image: j9r/prompt-eng-app
+    build:
+      context: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - $PWD:/app
+      - $HOME/.aws:/root/.aws
+    stdin_open: true
+    tty: true  
+    entrypoint: bash
